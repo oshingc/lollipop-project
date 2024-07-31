@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "a8094ac5-433f-4b45-85c1-04f6fd7028bf",
+		"name": "Lollipop - wv",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2340508"
+	},
+	"item": [
+		{
+			"name": "Retrieve Basket",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{lollipop-server}}/basket/{{basketId}}",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket",
+						"{{basketId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Basket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonObject = JSON.parse(responseBody);",
+							"",
+							"pm.collectionVariables.set('basketId', jsonObject.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"level\": \"NORMAL\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{lollipop-server}}/basket",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function getRandomInt(min, max) {",
+							"  min = Math.ceil(min);  // Ensures the minimum value is rounded up to the nearest whole number",
+							"  max = Math.floor(max); // Ensures the maximum value is rounded down to the nearest whole number",
+							"  return Math.floor(Math.random() * (max - min + 1)) + min; // The maximum and minimum are inclusive",
+							"}",
+							"",
+							"const productId = '' + Date.now() + Math.random().toString(36).substr(2, 9);",
+							"const price = 1.09 * getRandomInt(10, 50);",
+							"const quantity = getRandomInt(1, 5);",
+							"",
+							"",
+							"var requestBody = {",
+							"    \"id\": productId,",
+							"    \"name\": \"Product \" + productId,",
+							"    \"price\": price,",
+							"    \"cantidad\": quantity",
+							"};",
+							"",
+							"pm.collectionVariables.set('lastAddedProduct', JSON.stringify(requestBody))",
+							"pm.request.body.raw = JSON.stringify(requestBody)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{requestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{lollipop-server}}/basket/{{basketId}}/add_product",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket",
+						"{{basketId}}",
+						"add_product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var requestBody = JSON.parse(pm.collectionVariables.get('lastAddedProduct'))",
+							"requestBody.cantidad = 1",
+							"",
+							"pm.request.body.raw = JSON.stringify(requestBody);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{lollipop-server}}/basket/{{basketId}}/update_product",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket",
+						"{{basketId}}",
+						"update_product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var requestBody = JSON.parse(pm.collectionVariables.get('lastAddedProduct'))",
+							"pm.request.body.raw = JSON.stringify(requestBody);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{lollipop-server}}/basket/{{basketId}}/delete_product",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket",
+						"{{basketId}}",
+						"delete_product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Complete Basket",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{lollipop-server}}/basket/{{basketId}}/complete",
+					"host": [
+						"{{lollipop-server}}"
+					],
+					"path": [
+						"basket",
+						"{{basketId}}",
+						"complete"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "basketId",
+			"value": ""
+		},
+		{
+			"key": "lastProduct",
+			"value": ""
+		},
+		{
+			"key": "lastAddedProduct",
+			"value": ""
+		}
+	]
+}
