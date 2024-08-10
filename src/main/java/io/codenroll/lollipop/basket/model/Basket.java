@@ -1,7 +1,5 @@
 package io.codenroll.lollipop.basket.model;
 
-import io.codenroll.lollipop.basket.exception.BasketItemNotFoundException;
-
 import java.util.*;
 
 /**
@@ -104,24 +102,6 @@ public class Basket {
                 level == basket.level;
     }
 
-    /*
-     * if (this == obj) return true;
-     * if (obj == null || getClass() != obj.getClass()) return false;
-     * Basket basket = (Basket) obj;
-     * return Objects.equals(id, basket.id);
-     */
-
-    /*
-     * 
-     * if (this == obj) return true;
-     * if (obj == null || getClass() != obj.getClass()) return false;
-     * Basket basket = (Basket) obj;
-     * return Double.compare(basket.total, total) == 0 &&
-     * Objects.equals(id, basket.id) &&
-     * Objects.equals(basketItems, basket.basketItems) &&
-     * status == basket.status &&
-     * level == basket.level;
-     */
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -131,13 +111,4 @@ public class Basket {
         this.getBasketItems().add(basketItem);
     }
 
-    /*@Override
-    public String toString() {
-        return "Basket{" +
-                "id='" + id + '\'' +
-                ", level=" + level +
-                ", total=" + total +
-                ", basketItems=" + basketItems +
-                '}';
-    }*/
 }

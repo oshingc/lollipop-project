@@ -63,13 +63,4 @@ public class BasketItem {
         basketItems.removeIf(item -> item.getId().equals(basketItemId));
         //this.calculateTotal();
     }
-
-    /*@Override
-    public String toString() {
-        return "BasketItem{" +
-                "id='" + id + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }*/
 }
