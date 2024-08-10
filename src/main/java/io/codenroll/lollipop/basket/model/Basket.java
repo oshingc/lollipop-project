@@ -1,15 +1,17 @@
 package io.codenroll.lollipop.basket.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import io.codenroll.lollipop.basket.exception.BasketItemNotFoundException;
 
-/**Tenemos un Basket el cual se compone de una lista de
+import java.util.*;
+
+/**
+ * Tenemos un Basket el cual se compone de una lista de
  * Items los cuales hacen referencia al producto que se quiere comprar,
- * la cantidad y su precio**/
+ * la cantidad y su precio
+ **/
 public class Basket {
-    private final String id;
-    //private final List<Product> products = new ArrayList<>();
+    private String id;
+    // private final List<Product> products = new ArrayList<>();
     private final List<BasketItem> basketItems = new ArrayList<>();
 
     private double total;
@@ -23,6 +25,9 @@ public class Basket {
         this.level = level;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getId() {
         return id;
     }
@@ -46,14 +51,23 @@ public class Basket {
 
     public void addBasketItem(BasketItem basketItem) {
         basketItems.add(basketItem);
-        //updateTotal(product.getPrice());
         this.calculateTotal();
     }
 
-    /**Max 100 products**/
+    public void deleteBasketItem(BasketItem basketItem) {
+        basketItems.remove(basketItem);
+        this.calculateTotal();
+    }
+
+    public void deleteBasketItemById(String basketItemId) {
+        basketItems.removeIf(b->b.getId().equals(basketItemId));
+        this.calculateTotal();
+    }
+
+    /** Max 100 products **/
     public void calculateTotal() {
-        for(BasketItem pr: this.getBasketItems()) {
-            this.total += pr.getPrice() * pr.getCantidad();
+        for (BasketItem pr : this.getBasketItems()) {
+            this.total += pr.getPrice() * pr.getQuantity();
         }
     }
 
@@ -77,21 +91,53 @@ public class Basket {
         this.total += newValue;
     }
 
-    /** Removed to make id inmutable **/
-    /*
-    public void setId(String id) {
-        this.id = id;
-    }*/
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Basket basket = (Basket) obj;
+        return Double.compare(basket.total, total) == 0 &&
+                Objects.equals(basketItems, basket.basketItems) &&
+                status == basket.status &&
+                level == basket.level;
+    }
 
-    /** Removed because we don't change value directly outside the entity **/
     /*
-    public void setLevel(BasketLevel level) {
-        this.level = level;
-    }*/
+     * if (this == obj) return true;
+     * if (obj == null || getClass() != obj.getClass()) return false;
+     * Basket basket = (Basket) obj;
+     * return Objects.equals(id, basket.id);
+     */
 
     /*
-    public void setTotal(double total) {
-        this.total = total;
-    }*/
+     * 
+     * if (this == obj) return true;
+     * if (obj == null || getClass() != obj.getClass()) return false;
+     * Basket basket = (Basket) obj;
+     * return Double.compare(basket.total, total) == 0 &&
+     * Objects.equals(id, basket.id) &&
+     * Objects.equals(basketItems, basket.basketItems) &&
+     * status == basket.status &&
+     * level == basket.level;
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
+    public void addItem(BasketItem basketItem) {
+        this.getBasketItems().add(basketItem);
+    }
+
+    /*@Override
+    public String toString() {
+        return "Basket{" +
+                "id='" + id + '\'' +
+                ", level=" + level +
+                ", total=" + total +
+                ", basketItems=" + basketItems +
+                '}';
+    }*/
 }

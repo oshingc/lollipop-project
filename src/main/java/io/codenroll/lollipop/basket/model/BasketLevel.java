@@ -1,6 +1,6 @@
 package io.codenroll.lollipop.basket.model;
 
-import io.codenroll.lollipop.basket.util.Constants;
+import io.codenroll.lollipop.basket.util.BasketConstants;
 
 public enum BasketLevel {
     NORMAL {
@@ -12,13 +12,13 @@ public enum BasketLevel {
     SILVER {
         @Override
         public double calculateTotal(double total) {
-            return total * Constants.DISCOUNT10; // Apply a 10% discount
+            return total * BasketConstants.DISCOUNT10; // Apply a 10% discount
         }
     },
     GOLD  {
         @Override
         public double calculateTotal(double total) {
-            return total * Constants.DISCOUNT5; // Apply a 5% discount
+            return total * BasketConstants.DISCOUNT5; // Apply a 5% discount
         }
     };
 

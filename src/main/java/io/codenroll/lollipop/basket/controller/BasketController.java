@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/baskets")
@@ -34,7 +36,7 @@ public class BasketController {
 
     @PostMapping("/{basketId}/basketItem")
     @ResponseBody
-    public ResponseEntity<Void>  addBasketItemToBasket(@PathVariable String basketId, @RequestBody BasketItem basketItem) {
+    public ResponseEntity<Void> addBasketItemToBasket(@PathVariable String basketId, @RequestBody BasketItem basketItem) {
         try {
             basketService.addBasketItem(basketId, basketItem);
             return ResponseEntity.ok().build();
@@ -47,7 +49,7 @@ public class BasketController {
 
     /** Removed nid, no needed, changed PutMapping for PostMapping**/
     @PostMapping("/{basketId}/products")
-    public ResponseEntity<Void> updateBasketItem(@PathVariable String basketId, @RequestBody BasketItem basketItem) {
+    public ResponseEntity<Basket> updateBasketItem(@PathVariable String basketId, @RequestBody BasketItem basketItem) {
         try {
             basketService.updateBasketItem(basketId, basketItem);
             return ResponseEntity.ok().build();
@@ -74,8 +76,8 @@ public class BasketController {
     @PostMapping("/{basketId}/complete")
     public ResponseEntity<Void> completeBasket(@PathVariable String basketId) {
         try {
-            Basket basket = basketService.retrieveBasket(basketId);
-            if (basket.getStatus() != BasketStatus.IN_PROGRESS) {
+            Optional<Basket> basket = basketService.retrieveBasket(basketId);
+            if (basket.isPresent() && basket.get().getStatus() != BasketStatus.IN_PROGRESS) {
                 throw new InvalidBasketStateException("Basket must be IN PROGRESS to complete.");
             }
             basketService.complete(basketId);
@@ -88,9 +90,9 @@ public class BasketController {
     }
 
     @GetMapping("/{basketId}")
-    public ResponseEntity<Basket> retrieveBasket(@PathVariable String basketId) {
+    public ResponseEntity<Optional<Basket>> retrieveBasket(@PathVariable String basketId) {
         try {
-            Basket basket = basketService.retrieveBasket(basketId);
+            Optional<Basket> basket = basketService.retrieveBasket(basketId);
             return ResponseEntity.ok(basket);
         } catch (BasketNotFoundException ex) {
             return ResponseEntity.notFound().build();
